@@ -1,16 +1,31 @@
 import { OpenStreetMapProvider } from "leaflet-geosearch"
 
-const lat = 42.34106
-const long = -3.70184
+
+// Obtener valores del BBDD
+let lat// = document.querySelector('#lat').value // 42.34106
+let long// = document.querySelector('#lng').value // -3.70184
+let direccion
+
+//const lat = 42.34106
+//const long = -3.70184
 let markers, marker, map
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
+    
 
     if (document.querySelector('.mapa')) {
 
-        console.log(geocodeService);
+        lat = document.querySelector('#lat').value || 42.34106 // 42.34106
+        long = document.querySelector('#lng').value || -3.70184 // -3.70184
+        direccion = document.querySelector('#direccion').value || '' 
+
+        console.log(lat + " " + long);
+
+
+        //console.log(document.querySelector('.mapa'));
+       
+        //console.log(geocodeService);
 
         map = L.map('mapa').setView([lat, long], 15)
 
@@ -23,6 +38,35 @@ document.addEventListener('DOMContentLoaded', () => {
         //Buscar direccion
         const buscador = document.querySelector('#formbuscador')
         buscador.addEventListener('input', buscarDireccion)
+
+
+        if(lat && long){
+            //Agregar pin
+            marker = new L.marker([lat, long], {
+            draggable: true,
+            autoPan: true,
+            }).addTo(map).bindPopup(`Tu Meeti.<br> ${direccion}`).openPopup()
+
+
+              //Detctar movimiento del marker
+              marker.on('moveend', (e) => {
+                //console.log(e);
+                marker = e.target
+                //console.log('MARKER ', marker);
+                const posicion = marker.getLatLng()
+                //console.log('POSICION', posicion);
+                geocodeService.reverse().latlng(posicion, 15).run(function (error, result) {
+                    //console.log('RESULT', result);
+                    //console.log(result.address.Match_addr)
+                    map.panTo(new L.LatLng(posicion.lat, posicion.lng))
+                    marker.bindPopup(`Tu Meeti. <br> ${result.address.Match_addr}`).openPopup();
+                    // L.marker(posicion).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+                    llenarInputs(result)
+                })
+            })
+
+        }
+
     }
 
 })

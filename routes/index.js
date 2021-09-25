@@ -78,7 +78,46 @@ module.exports = () => {
         meetiController.crearMeeti) 
 
     // Editar Meeti
-    
+    router.get('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEditarMeeti
+    )
+
+    router.post('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.editarMeeti
+    )
+
+    // Eliminar Meeti
+    router.get('/eliminar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEliminarMeeti
+    );
+    router.post('/eliminar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.eliminarMeeti
+    );
+
+    // Editar información de perfil
+    router.get('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formEditarPerfil
+    );
+
+    router.post('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.editarPerfil
+    );
+
+        // modifica el password
+    router.get('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.formCambiarPassword
+    );
+    router.post('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.cambiarPassword
+    );
 
     return router
 }

@@ -1,5 +1,5 @@
 const Usuarios = require('../models/Usuarios')
-const { body, validationResult } = require('express-validator')
+const { body, validationResult, check } = require('express-validator')
 
 const enviarEmail = require('../handlers/emails')
 
@@ -100,4 +100,72 @@ exports.confirmarCuenta = async (req, res, next) => {
     req.flash('exito', 'La cuenta se activo correctamente')
     res.redirect('/iniciar-sesion')
 
+}
+
+
+// Muestra el formulario para editar el perfil
+exports.formEditarPerfil = async (req, res) => {
+    const usuario = await Usuarios.findByPk(req.user.id);
+
+    res.render('editar-perfil', {
+        nombrePagina : 'Editar Perfil',
+        usuario
+    })
+}
+
+// almacena en la Base de datos los cambios al perfil
+exports.editarPerfil = async (req, res) => {
+
+    const usuario = await Usuarios.findByPk(req.user.id);
+
+    // ToDO : Sanitizar
+    check('nombre');
+    check('email');
+    // leer datos del form
+    const { nombre, descripcion, email} = req.body;
+
+    // asignar los valores
+    usuario.nombre = nombre;
+    usuario.descripcion = descripcion;
+    usuario.email = email;
+
+    // guardar en la BD
+    await usuario.save();
+    req.flash('exito', 'Cambios Guardados Correctamente');
+    res.redirect('/administracion');
+
+}
+
+// Muestra el formulario para modificar el password
+exports.formCambiarPassword = (req, res) => {
+    res.render('cambiar-password', {
+        nombrePagina : 'Cambiar Password'
+    })
+}
+
+// Revisa si el password anterior es correcto y lo modifica por uno nuevo
+
+exports.cambiarPassword = async (req, res, next) => {
+    const usuario = await Usuarios.findByPk(req.user.id);
+
+    // verificar que el password anterior sea correcto
+    if(!usuario.validarPassword(req.body.anterior)) {
+        req.flash('error', 'El password actual es incorrecto');
+        res.redirect('/administracion');
+        return next();
+    }
+
+    // si  el password es correcto, hashear el nuevo
+    const hash = usuario.hashPassword(req.body.nuevo);
+
+    // asignar el password al usuario
+    usuario.password = hash;
+
+    // guardar en la base de datos
+    await usuario.save();
+
+    // redireccionar
+    req.logout();
+    req.flash('exito', 'Password Modificado Correctamente, vuelve a iniciar sesión');
+    res.redirect('/iniciar-sesion');
 }
