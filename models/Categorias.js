@@ -9,7 +9,7 @@ const Categorias = db.define('categorias', {
         autoIncrement : true
     }, 
     nombre : Sequelize.TEXT,
-   // slug : Sequelize.TEXT
+    slug : Sequelize.TEXT
 }, {
     timestamps : false
 })

@@ -10,6 +10,8 @@ const gruposController = require('../controllers/gruposController')
 const meetiController = require('../controllers/meetiController')
 
 module.exports = () => {
+
+    // *** AREA PUBLICA 
     router.get('/', homeController.home)
 
 
@@ -21,6 +23,12 @@ module.exports = () => {
     router.get('/iniciar-sesion', usuariosController.formIniciarSesion)
     router.post('/iniciar-sesion', authController.autenticarUsuario)
 
+    // cerrar sesion
+    router.get('/cerrar-sesion',
+        authController.usuarioAutenticado,
+        authController.cerrarSesion
+    )
+ 
 
     // Administracion
     router.get('/administracion', 
@@ -63,8 +71,8 @@ module.exports = () => {
         gruposController.formEliminarGrupo) 
 
     router.post('/eliminar-grupo/:grupoId',
-    authController.usuarioAutenticado,
-    gruposController.eliminarGrupo) 
+        authController.usuarioAutenticado,
+        gruposController.eliminarGrupo) 
 
     // Meetis
     router.get('/nuevo-meeti',
@@ -102,22 +110,36 @@ module.exports = () => {
     router.get('/editar-perfil',
         authController.usuarioAutenticado,
         usuariosController.formEditarPerfil
-    );
+    )
 
     router.post('/editar-perfil',
         authController.usuarioAutenticado,
         usuariosController.editarPerfil
-    );
+    )
 
         // modifica el password
     router.get('/cambiar-password',
         authController.usuarioAutenticado,
         usuariosController.formCambiarPassword
-    );
+    )
+
     router.post('/cambiar-password',
         authController.usuarioAutenticado,
         usuariosController.cambiarPassword
-    );
+    )
+
+    // Imagen perfil
+    router.get('/imagen-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formSubirImagenPerfil
+    )
+
+    router.post('/imagen-perfil', 
+        authController.usuarioAutenticado,
+        usuariosController.subirImagen,
+        usuariosController.guardarImagenPerfil
+    )
+
 
     return router
 }
