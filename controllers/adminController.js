@@ -18,8 +18,6 @@ exports.panelAdministracion = async (req, res) => {
                                          order : [
                                              ['fecha', 'ASC']
                                          ] 
-    
-    
         }) );
     
         consultas.push( Meeti.findAll({ where : { usuarioId : req.user.id, 

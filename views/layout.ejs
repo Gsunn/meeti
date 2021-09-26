@@ -69,7 +69,11 @@
     <!-- <script src="https://js.arcgis.com/4.20/"></script> -->
 
 
-    <script src="/dist/bundle.js"></script>
+    <% if(usuario.id) { %>
+        <script src="/dist/bundle.js"></script>
+    <% } %>
+
+    <script src="/js/meeti.js"></script>
 
 </body>
 </body>

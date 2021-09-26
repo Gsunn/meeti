@@ -9,10 +9,18 @@ const adminController = require('../controllers/adminController')
 const gruposController = require('../controllers/gruposController')
 const meetiController = require('../controllers/meetiController')
 
+// FRONTEND
+const meetiControllerFE = require('../controllers/frontend/meetiControllerFE')
+
 module.exports = () => {
 
     // *** AREA PUBLICA 
     router.get('/', homeController.home)
+
+    // Muestra un meeti
+    router.get('/meeti/:slug', 
+        meetiControllerFE.mostrarMeeti
+    )
 
 
     router.get('/crear-cuenta', usuariosController.formCrearCuenta)
@@ -139,6 +147,8 @@ module.exports = () => {
         usuariosController.subirImagen,
         usuariosController.guardarImagenPerfil
     )
+
+
 
 
     return router
